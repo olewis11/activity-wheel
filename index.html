@@ -323,7 +323,7 @@
   </div>
 
   <script>
-    // The requested activities lists
+    // The requested activities lists (with "Movies" update)
     const sunnyActivities = [
       '⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', 
       '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', 
@@ -333,14 +333,14 @@
     const rainyActivities = [
       '🛁 Hot Tub', '🏰 Build A Fort', '🧱 Legos', 
       '🎮 Video Games', '🔫 Nerf Battle', '🎲 Board Game', 
-      '🍿 Movie Marathon', '📖 Reading', '🧑‍🍳 Baking', 
+      '🍿 Movies', '📖 Reading', '🧑‍🍳 Baking', 
       '🧗‍♀️ Rock Climbing', '🎳 Bowling'
     ];
 
-    // The new vibrant palette for the wheel wedges
+    // The vibrant palette without #FAD7A0
     const colors = [
       '#4A90E2', '#5DBB63', '#F07167', '#F39C12', 
-      '#8E44AD', '#27AE60', '#FAD7A0', '#3E7B8B', '#D35400'
+      '#8E44AD', '#27AE60', '#3E7B8B', '#D35400'
     ];
 
     // Start with Sunny by default
@@ -484,13 +484,20 @@
 
     function playTickSound() {
       if (!audioCtx) return;
+      
+      // Ensure the audio context is running (fixes issues on some mobile browsers)
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
       
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); 
-      oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
-      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      // Changed to a punchier triangle wave and boosted the volume slightly
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
+      oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+      gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
       
       oscillator.connect(gainNode);
@@ -504,7 +511,6 @@
         particleCount: 150,
         spread: 90,
         origin: { y: 0.6 },
-        // Updated confetti to match the new vibrant palette
         colors: ['#4A90E2', '#5DBB63', '#F07167', '#F39C12', '#8E44AD'],
         zIndex: 1000 
       });
@@ -600,12 +606,19 @@
       sunnyBtn.disabled = true;
       rainyBtn.disabled = true;
 
+      // Ensure audio context is ready (creates the "unlock" so iOS Safari lets the sound play)
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+      
+      // Play a silent 1ms sound immediately on click to force mobile browsers to unlock audio
+      const unlockOsc = audioCtx.createOscillator();
+      unlockOsc.connect(audioCtx.destination);
+      unlockOsc.start(audioCtx.currentTime);
+      unlockOsc.stop(audioCtx.currentTime + 0.001);
 
       const numWedges = activeActivities.length;
       const arcSize = (2 * Math.PI) / numWedges;
