@@ -10,23 +10,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* Base Hearth-like Theme: Warm, minimalist, matte */
+  /* Base Hearth-like Theme with Custom Color Palette */
   body {
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #F7F5F0; 
+    background-color: #F6F4EF; 
     margin: 0;
     padding: 40px 20px;
-    color: #4A4640; 
+    color: #2D2B2A; 
   }
 
   h1 {
     font-size: 38px;
     font-weight: 600;
     margin-bottom: 40px;
-    color: #2C2A26;
+    color: #2D2B2A;
     text-align: center;
     letter-spacing: -0.5px;
   }
@@ -42,22 +42,20 @@
     flex-wrap: wrap; 
   }
 
-  /* Elegant Card Panels */
   #checklist-panel {
     background-color: #FFFFFF;
     padding: 30px 40px;
     border-radius: 24px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-    border: 1px solid #EBE7E0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    border: 1px solid #EAE6DF;
     min-width: 280px;
     display: flex;
     flex-direction: column; 
   }
 
-  /* Segmented Control for Weather Options */
   .mode-selector {
     display: flex;
-    background-color: #F0EEE7;
+    background-color: #EAE6DF;
     border-radius: 16px;
     padding: 6px;
     margin-bottom: 25px;
@@ -72,18 +70,17 @@
     font-family: inherit;
     font-size: 16px;
     font-weight: 600;
-    color: #A6A29C;
+    color: #8D8982;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .mode-btn.active {
     background-color: #FFFFFF;
-    color: #4A4640;
+    color: #2D2B2A;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
-  /* Minimalist Bulk Actions */
   .bulk-actions {
     display: flex;
     justify-content: space-between;
@@ -97,51 +94,33 @@
     font-size: 14px;
     font-family: inherit;
     font-weight: 500;
-    background-color: #F0EEE7;
-    color: #4A4640;
+    background-color: #EAE6DF;
+    color: #2D2B2A;
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
   }
 
-  .bulk-btn:hover {
-    background-color: #E6E3DB;
-  }
-
-  .bulk-btn:active {
-    transform: scale(0.98);
-  }
-
-  /* Clean Checklist Items */
   .check-item {
     display: flex;
     align-items: center;
     margin: 14px 0;
     font-size: 18px;
-    font-weight: 400;
     cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .check-item:hover {
-    opacity: 0.8;
   }
 
   .check-item input[type="checkbox"] {
     width: 20px;
     height: 20px;
     margin-right: 15px;
-    cursor: pointer;
-    accent-color: #7C9A92; 
+    accent-color: #5DBB63; /* Use provided green */
   }
 
-  /* Subtle Custom Input */
   .add-custom-container {
     display: flex;
     margin-top: auto; 
     gap: 12px;
-    border-top: 1px solid #EBE7E0;
+    border-top: 1px solid #EAE6DF;
     padding-top: 25px;
   }
 
@@ -149,38 +128,19 @@
     flex: 1;
     padding: 12px 16px;
     font-size: 16px;
-    background-color: #F7F5F0;
-    border: 1px solid transparent;
+    background-color: #F6F4EF;
     border-radius: 12px;
-    font-family: inherit;
-    color: #4A4640;
-    transition: border 0.2s;
-  }
-
-  #custom-input:focus {
-    outline: none;
-    border: 1px solid #7C9A92;
-    background-color: #FFFFFF;
+    border: 1px solid transparent;
   }
 
   #add-btn {
     padding: 12px 20px;
-    font-size: 16px;
-    background-color: #7C9A92; 
+    background-color: #3E7B8B; /* Use provided Teal */
     color: white;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 500;
-    transition: background-color 0.2s, transform 0.1s;
-  }
-
-  #add-btn:hover {
-    background-color: #6A857E;
-  }
-  
-  #add-btn:active {
-    transform: scale(0.96);
   }
 
   #wheel-section {
@@ -191,8 +151,8 @@
     background-color: #FFFFFF;
     padding: 40px;
     border-radius: 32px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-    border: 1px solid #EBE7E0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    border: 1px solid #EAE6DF;
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -205,7 +165,6 @@
     justify-content: center;
   }
 
-  /* UPDATED POINTER (FLIPPER) STYLES */
   #pointer {
     position: absolute;
     top: 50%;
@@ -215,72 +174,49 @@
     height: 0;
     border-top: 18px solid transparent;
     border-bottom: 18px solid transparent;
-    border-right: 36px solid #4A4640; 
+    border-right: 36px solid #2D2B2A; 
     z-index: 10;
     filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.2));
   }
 
-  /* Flat, clean wheel border with Squish Trick */
   #wheel {
     border-radius: 50%;
-    border: 12px solid #F7F5F0;
+    border: 12px solid #F6F4EF;
     box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    background-color: #F7F5F0;
     max-width: 100%; 
     height: auto;    
   }
 
-  /* Modern Pill Button */
   #spinBtn {
     padding: 16px 60px;
     font-size: 22px;
-    font-family: inherit;
     font-weight: 600;
-    letter-spacing: 1px;
-    background-color: #D9B46C; 
+    background-color: #4A90E2; /* Use provided Blue */
     color: #FFFFFF;
     border: none;
     border-radius: 100px;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(217, 180, 108, 0.3);
-    transition: all 0.2s ease;
-    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+    transition: all 0.2s;
   }
 
-  #spinBtn:hover {
-    background-color: #CBA55B;
-    box-shadow: 0 10px 24px rgba(217, 180, 108, 0.4);
-    transform: translateY(-2px);
-  }
-
-  #spinBtn:active {
-    transform: translateY(2px);
-    box-shadow: 0 4px 10px rgba(217, 180, 108, 0.2);
-  }
-
-  #spinBtn:disabled {
-    background-color: #E6E3DB;
-    color: #A6A29C;
-    box-shadow: none;
-    cursor: not-allowed;
-    transform: none;
-  }
+  #spinBtn:hover { background-color: #357ABD; transform: translateY(-2px); }
+  #spinBtn:active { transform: translateY(2px); }
 
   #result {
     font-size: 28px;
     font-weight: 500;
-    color: #D98A6C; 
+    color: #F07167; /* Use provided Coral */
     min-height: 40px;
     text-align: center;
   }
   
   @media (max-width: 600px) {
-    /* UPDATED MOBILE POINTER STYLES */
     #pointer {
       right: -4px; 
       border-top: 12px solid transparent;
       border-bottom: 12px solid transparent;
-      border-right: 24px solid #4A4640; 
+      border-right: 24px solid #2D2B2A; 
     }
   }
 </style>
@@ -290,21 +226,16 @@
   <h1>What Should We Do Next?</h1>
   
   <div id="main-layout">
-    
     <div id="checklist-panel">
-      
       <div class="mode-selector">
         <button class="mode-btn active" id="sunny-btn">☀️ Sunny Day</button>
         <button class="mode-btn" id="rainy-btn">🌧️ Rainy Day</button>
       </div>
-      
       <div class="bulk-actions">
         <button class="bulk-btn" id="check-all-btn">Select All</button>
         <button class="bulk-btn" id="uncheck-all-btn">Clear All</button>
       </div>
-
       <div id="checklist-items"></div>
-      
       <div class="add-custom-container">
         <input type="text" id="custom-input" placeholder="Add an activity...">
         <button id="add-btn">Add</button>
@@ -319,33 +250,23 @@
       <button id="spinBtn">SPIN</button>
       <div id="result">Ready for the weekend</div>
     </div>
-
   </div>
 
   <script>
-    // The updated lists
-    const sunnyActivities = [
-      '⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', 
-      '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', 
-      '🚲 Bikes', '🏎️ Go-Karts', '🧭 Exploring', '🐕 Fetch'
-    ];
+    const sunnyActivities = ['⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', '🚲 Bikes', '🏎️ Go-Karts', '🧭 Exploring', '🐕 Fetch'];
+    const rainyActivities = ['🛁 Hot Tub', '🏰 Build A Fort', '🧱 Legos', '🎮 Video Games', '🔫 Nerf Battle', '🎲 Board Game', '🍿 Movie Marathon', '📖 Reading', '🧑‍🍳 Baking', '🧗‍♀️ Rock Climbing', '🎳 Bowling'];
 
-    const rainyActivities = [
-      '🛁 Hot Tub', '🏰 Build A Fort', '🧱 Legos', 
-      '🎮 Video Games', '🔫 Nerf Battle', '🎲 Board Game', 
-      '🍿 Movie Marathon', '📖 Reading', '🧑‍🍳 Baking', 
-      '🧗‍♀️ Rock Climbing', '🎳 Bowling', '📞 Call Someone'
-    ];
+    // Your NEW Color Palette
+    const colors = ['#4A90E2', '#5DBB63', '#F07167', '#3E7B8B'];
 
-    const colors = [
-      '#7C9A92', '#D9B46C', '#D98A6C', '#7A90A4', 
-      '#C2B8A3', '#E8B4A6', '#A6A29C' 
-    ];
-
-    // Start with Sunny by default
     let currentMode = 'sunny';
     let masterActivities = [...sunnyActivities];
     let activeActivities = [...masterActivities];
+    let currentAngle = 0;
+    let isSpinning = false;
+    let audioCtx = null;
+    let previousWedge = -1;
+    let flickOffset = 0; 
 
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
@@ -353,325 +274,125 @@
     const resultDiv = document.getElementById('result');
     const checklistDiv = document.getElementById('checklist-items');
     const customInput = document.getElementById('custom-input');
-    const addBtn = document.getElementById('add-btn');
-    const checkAllBtn = document.getElementById('check-all-btn');
-    const uncheckAllBtn = document.getElementById('uncheck-all-btn');
     const pointer = document.getElementById('pointer');
-    
     const sunnyBtn = document.getElementById('sunny-btn');
     const rainyBtn = document.getElementById('rainy-btn');
 
-    let currentAngle = 0;
-    let isSpinning = false;
-    let audioCtx = null;
-    let previousWedge = -1;
-    let flickOffset = 0; 
-
-    // Handle swapping between Sunny and Rainy modes
     function setMode(mode) {
       if (isSpinning) return;
       currentMode = mode;
-      
-      if (mode === 'sunny') {
-        sunnyBtn.classList.add('active');
-        rainyBtn.classList.remove('active');
-        masterActivities = [...sunnyActivities];
-      } else {
-        rainyBtn.classList.add('active');
-        sunnyBtn.classList.remove('active');
-        masterActivities = [...rainyActivities];
-      }
-      
+      sunnyBtn.classList.toggle('active', mode === 'sunny');
+      rainyBtn.classList.toggle('active', mode === 'rainy');
+      masterActivities = mode === 'sunny' ? [...sunnyActivities] : [...rainyActivities];
       buildChecklist();
       updateActiveActivities();
     }
 
-    sunnyBtn.addEventListener('click', () => setMode('sunny'));
-    rainyBtn.addEventListener('click', () => setMode('rainy'));
+    sunnyBtn.onclick = () => setMode('sunny');
+    rainyBtn.onclick = () => setMode('rainy');
 
     function buildChecklist() {
-      // Clear out the old list
       checklistDiv.innerHTML = '';
-      
       masterActivities.forEach(activity => {
-        addCheckboxToDOM(activity);
+        const label = document.createElement('label');
+        label.className = 'check-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = activity;
+        cb.checked = true;
+        cb.onchange = updateActiveActivities;
+        label.append(cb, activity);
+        checklistDiv.append(label);
       });
     }
-
-    function addCheckboxToDOM(activity) {
-      const label = document.createElement('label');
-      label.className = 'check-item';
-      
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = activity;
-      checkbox.checked = true; 
-      
-      checkbox.addEventListener('change', updateActiveActivities);
-      
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(activity));
-      checklistDiv.appendChild(label);
-    }
-
-    function addCustomActivity() {
-      const newActivity = customInput.value.trim();
-      if (newActivity === '') return;
-      if (masterActivities.map(a => a.toLowerCase()).includes(newActivity.toLowerCase())) {
-        alert("That is already on the list!");
-        customInput.value = '';
-        return;
-      }
-      
-      // Add it to whichever list is currently active
-      if (currentMode === 'sunny') {
-        sunnyActivities.push(newActivity);
-      } else {
-        rainyActivities.push(newActivity);
-      }
-      masterActivities.push(newActivity);
-      
-      addCheckboxToDOM(newActivity);
-      customInput.value = '';
-      updateActiveActivities();
-    }
-
-    addBtn.addEventListener('click', addCustomActivity);
-    customInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') addCustomActivity();
-    });
-
-    checkAllBtn.addEventListener('click', () => {
-      if (isSpinning) return;
-      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
-      checkboxes.forEach(box => box.checked = true);
-      updateActiveActivities();
-    });
-
-    uncheckAllBtn.addEventListener('click', () => {
-      if (isSpinning) return;
-      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
-      checkboxes.forEach(box => box.checked = false);
-      updateActiveActivities();
-    });
 
     function updateActiveActivities() {
-      if (isSpinning) return; 
-
-      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
-      activeActivities = [];
-      
-      checkboxes.forEach(box => {
-        if (box.checked) {
-          activeActivities.push(box.value);
-        }
-      });
-
-      if (activeActivities.length < 2) {
-        spinBtn.disabled = true;
-        resultDiv.innerText = "Select at least 2 options";
-        resultDiv.style.color = "#A6A29C";
-      } else {
-        spinBtn.disabled = false;
-        resultDiv.innerText = "Ready for the weekend";
-        resultDiv.style.color = "#D98A6C";
-      }
-
-      currentAngle = 0; 
+      const cbs = checklistDiv.querySelectorAll('input');
+      activeActivities = Array.from(cbs).filter(i => i.checked).map(i => i.value);
+      spinBtn.disabled = activeActivities.length < 2;
+      resultDiv.innerText = spinBtn.disabled ? "Select at least 2 options" : "Ready for the weekend";
+      currentAngle = 0;
       drawWheel();
     }
 
-    function playTickSound() {
-      if (!audioCtx) return;
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); 
-      oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
-      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.05);
-    }
-
-    function fireConfetti() {
-      confetti({
-        particleCount: 150,
-        spread: 90,
-        origin: { y: 0.6 },
-        colors: ['#7C9A92', '#D9B46C', '#D98A6C', '#7A90A4', '#E8B4A6'],
-        zIndex: 1000 
-      });
-    }
-
-    function announceWinner(activity) {
-      window.speechSynthesis.cancel();
-      
-      const cleanText = activity.replace(/[^a-zA-Z0-9 -]/g, '').trim();
-      const announcement = new SpeechSynthesisUtterance(`Let's do ${cleanText}!`);
-      
-      announcement.pitch = 1.0; 
-      announcement.rate = 1.0;  
-      announcement.volume = 0.8;
-
-      window.speechSynthesis.speak(announcement);
-    }
-
     function drawWheel() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const numWedges = activeActivities.length;
-      
-      if (numWedges === 0) return; 
-
-      const arcSize = (2 * Math.PI) / numWedges;
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const radius = canvas.width / 2;
-
-      for (let i = 0; i < numWedges; i++) {
-        const angle = currentAngle + i * arcSize;
-        
+      ctx.clearRect(0,0,500,500);
+      const len = activeActivities.length;
+      if (!len) return;
+      const arc = (Math.PI*2)/len;
+      activeActivities.forEach((act, i) => {
+        const ang = currentAngle + i * arc;
         ctx.beginPath();
         ctx.fillStyle = colors[i % colors.length];
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, angle, angle + arcSize, false);
+        ctx.moveTo(250,250);
+        ctx.arc(250,250,250, ang, ang+arc);
         ctx.fill();
+        ctx.lineWidth = 2; ctx.strokeStyle = "#fff"; ctx.stroke();
         
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#FFFFFF";
-        ctx.stroke();
         ctx.save();
-
-        ctx.fillStyle = 'white';
-        
-        let fontSize = 22;
-        if (numWedges > 12) fontSize = 16;
-        if (numWedges > 18) fontSize = 13;
-
-        const textRadius = radius - 35; 
-        ctx.translate(
-          centerX + Math.cos(angle + arcSize / 2) * textRadius, 
-          centerY + Math.sin(angle + arcSize / 2) * textRadius
-        );
-        ctx.rotate(angle + arcSize / 2);
-        
-        ctx.font = `500 ${fontSize}px 'Outfit', sans-serif`;
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        
-        let displayText = activeActivities[i];
-        if (displayText.length > 20) {
-           displayText = displayText.substring(0, 17) + "...";
-        }
-        
-        ctx.fillText(displayText, 0, 0);
+        ctx.fillStyle = "#fff";
+        ctx.translate(250 + Math.cos(ang+arc/2)*210, 250 + Math.sin(ang+arc/2)*210);
+        ctx.rotate(ang + arc/2);
+        ctx.font = `500 ${len > 12 ? 14 : 18}px Outfit`;
+        ctx.textAlign = "right";
+        ctx.fillText(act.length > 18 ? act.slice(0,15)+"..." : act, 0,0);
         ctx.restore();
-      }
-      
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
-      ctx.fillStyle = "#F7F5F0";
-      ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.stroke();
+      });
+      // Center circle
+      ctx.beginPath(); ctx.arc(250,250,30,0,Math.PI*2); ctx.fillStyle="#F6F4EF"; ctx.fill();
     }
 
-    function spin() {
-      if (isSpinning || activeActivities.length < 2) return;
-      
-      isSpinning = true;
-      spinBtn.disabled = true;
-      resultDiv.innerText = "Deciding...";
-      resultDiv.style.color = "#A6A29C";
+    spinBtn.onclick = () => {
+      if (isSpinning) return;
+      isSpinning = true; spinBtn.disabled = true;
+      const duration = 5000 + Math.random()*3000;
+      const totalRotation = (Math.random()*10 + 20) * Math.PI;
+      const start = performance.now();
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
-      checkboxes.forEach(box => box.disabled = true);
-      customInput.disabled = true;
-      addBtn.disabled = true;
-      checkAllBtn.disabled = true;
-      uncheckAllBtn.disabled = true;
-      sunnyBtn.disabled = true;
-      rainyBtn.disabled = true;
-
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      const numWedges = activeActivities.length;
-      const arcSize = (2 * Math.PI) / numWedges;
-      const spinDuration = 5000 + Math.random() * 3000; 
-      const spinTotalAngle = (Math.random() * 10 + 25) * Math.PI; 
-      const startTime = performance.now();
-
-      function easeOutQuart(t, b, c, d) {
-        t /= d;
-        t--;
-        return -c * (t * t * t * t - 1) + b;
-      }
-
-      function animate(currentTime) {
-        const elapsed = currentTime - startTime;
-        
-        if (elapsed < spinDuration) {
-          currentAngle = easeOutQuart(elapsed, 0, spinTotalAngle, spinDuration);
+      function animate(now) {
+        const elapsed = now - start;
+        if (elapsed < duration) {
+          const t = elapsed/duration;
+          const ease = 1 - Math.pow(1 - t, 4);
+          currentAngle = ease * totalRotation;
           drawWheel();
-          
-          const normalizedAngle = currentAngle % (2 * Math.PI);
-          const invertedAngle = (2 * Math.PI) - normalizedAngle;
-          const currentWedge = Math.floor(invertedAngle / arcSize) % numWedges;
-
-          if (currentWedge !== previousWedge && previousWedge !== -1) {
-            playTickSound();
-            flickOffset = 15; 
+          const wedge = Math.floor(((Math.PI*2 - (currentAngle % (Math.PI*2))) % (Math.PI*2)) / ((Math.PI*2)/activeActivities.length));
+          if (wedge !== previousWedge) {
+            if (audioCtx) {
+              const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+              osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+              osc.connect(g); g.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime+0.05);
+            }
+            flickOffset = 15;
           }
-          previousWedge = currentWedge;
-
-          flickOffset += (0 - flickOffset) * 0.15;
+          previousWedge = wedge;
+          flickOffset *= 0.85;
           pointer.style.transform = `translateY(calc(-50% + ${flickOffset}px))`;
-
           requestAnimationFrame(animate);
         } else {
-          isSpinning = false;
-          spinBtn.disabled = false;
-          checkboxes.forEach(box => box.disabled = false);
-          customInput.disabled = false;
-          addBtn.disabled = false;
-          checkAllBtn.disabled = false;
-          uncheckAllBtn.disabled = false;
-          sunnyBtn.disabled = false;
-          rainyBtn.disabled = false;
-          previousWedge = -1; 
-          
-          pointer.style.transform = `translateY(-50%)`;
-          
-          const normalizedAngle = currentAngle % (2 * Math.PI);
-          const invertedAngle = (2 * Math.PI) - normalizedAngle;
-          const winningIndex = Math.floor(invertedAngle / arcSize) % numWedges;
-          const winningActivity = activeActivities[winningIndex];
-
-          resultDiv.innerText = "Let's do " + winningActivity;
-          resultDiv.style.color = "#D98A6C";
-
-          fireConfetti();
-          announceWinner(winningActivity);
+          isSpinning = false; spinBtn.disabled = false;
+          const finalWedge = Math.floor(((Math.PI*2 - (currentAngle % (Math.PI*2))) % (Math.PI*2)) / ((Math.PI*2)/activeActivities.length));
+          resultDiv.innerText = "Let's do " + activeActivities[finalWedge];
+          confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: colors });
+          const utt = new SpeechSynthesisUtterance("Let's do " + activeActivities[finalWedge].replace(/[^a-zA-Z ]/g, ""));
+          window.speechSynthesis.speak(utt);
         }
       }
-
       requestAnimationFrame(animate);
-    }
+    };
 
-    // Initialize the app
-    buildChecklist();
-    spinBtn.addEventListener('click', spin);
-    drawWheel();
+    document.getElementById('check-all-btn').onclick = () => { checklistDiv.querySelectorAll('input').forEach(i => i.checked = true); updateActiveActivities(); };
+    document.getElementById('uncheck-all-btn').onclick = () => { checklistDiv.querySelectorAll('input').forEach(i => i.checked = false); updateActiveActivities(); };
+    document.getElementById('add-btn').onclick = () => {
+      const val = customInput.value.trim();
+      if (!val) return;
+      if (currentMode === 'sunny') sunnyActivities.push(val); else rainyActivities.push(val);
+      masterActivities.push(val); buildChecklist(); updateActiveActivities(); customInput.value = '';
+    };
+
+    buildChecklist(); drawWheel();
   </script>
 </body>
 </html>
