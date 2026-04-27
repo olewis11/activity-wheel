@@ -205,7 +205,7 @@
     justify-content: center;
   }
 
-  /* Flipper Pointer */
+/* Flipper Pointer with White Outline */
   #pointer {
     position: absolute;
     top: 50%;
@@ -213,17 +213,31 @@
     transform: translateY(-50%);
     width: 0;
     height: 0;
-    border-top: 18px solid transparent;
-    border-bottom: 18px solid transparent;
-    border-right: 36px solid #D35400; /* Burnt Orange for visibility */
+    /* Outer Triangle (White Outline) */
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 36px solid #FFFFFF; 
     z-index: 10;
     filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.15));
   }
 
-  /* Flat, clean wheel border with Squish Trick */
+  /* Inner Triangle (Matches Spin Button) */
+  #pointer::after {
+    content: "";
+    position: absolute;
+    top: -16px; /* Vertically centers inside the 20px outer */
+    left: 4px;  /* Shifts right to leave a white tip */
+    width: 0;
+    height: 0;
+    border-top: 16px solid transparent;
+    border-bottom: 16px solid transparent;
+    border-right: 28px solid #2C3E50; /* Spin button navy */
+  }
+
+/* Flat, clean wheel border matching the mode selector */
   #wheel {
     border-radius: 50%;
-    border: 12px solid #FDFCF0;
+    border: 12px solid #E0F2F1; /* Changed to match the Sunny/Rainy container */
     box-shadow: 0 8px 24px rgba(44, 62, 80, 0.08);
     background-color: #FDFCF0;
     max-width: 100%; 
@@ -273,14 +287,21 @@
     min-height: 40px;
     text-align: center;
   }
-  
-  @media (max-width: 600px) {
+
+   @media (max-width: 600px) {
     /* MOBILE POINTER STYLES */
     #pointer {
-      right: -4px; 
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
-      border-right: 24px solid #D35400; 
+      right: -6px; 
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-right: 26px solid #FFFFFF; 
+    }
+    #pointer::after {
+      top: -11px;
+      left: 3px;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+      border-right: 20px solid #2C3E50;
     }
   }
 </style>
