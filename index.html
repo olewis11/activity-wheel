@@ -174,11 +174,17 @@
     border-radius: 32px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.04);
     border: 1px solid #EBE7E0;
+    /* Ensure the section doesn't get wider than the screen */
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   #wheel-container {
     position: relative;
     margin-bottom: 30px;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   /* Elegant Pointer */
@@ -186,7 +192,6 @@
     position: absolute;
     top: 50%;
     right: -25px; 
-    /* Will be controlled via JS for the flick animation */
     transform: translateY(-50%);
     width: 0;
     height: 0;
@@ -195,15 +200,17 @@
     border-right: 30px solid #D98A6C; 
     z-index: 10;
     filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.1));
-    /* Removing transition here so JS can manipulate it instantly frame-by-frame */
   }
 
-  /* Flat, clean wheel border */
+  /* Flat, clean wheel border - NOW WITH SQUISH TRICK */
   #wheel {
     border-radius: 50%;
     border: 12px solid #F7F5F0;
     box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     background-color: #F7F5F0;
+    /* The Squish Trick */
+    max-width: 100%; 
+    height: auto;    
   }
 
   /* Modern Pill Button */
@@ -248,6 +255,14 @@
     color: #D98A6C; 
     min-height: 40px;
     text-align: center;
+  }
+  
+  /* Extra media query to adjust pointer for very small screens */
+  @media (max-width: 600px) {
+    #pointer {
+      right: 0px; /* Bring the pointer closer on small screens */
+      border-right: 20px solid #D98A6C; /* Make it slightly smaller */
+    }
   }
 </style>
 </head>
@@ -313,7 +328,7 @@
     let isSpinning = false;
     let audioCtx = null;
     let previousWedge = -1;
-    let flickOffset = 0; // Tracks the vertical bounce of the pointer
+    let flickOffset = 0; 
 
     function buildChecklist() {
       masterActivities.forEach(activity => {
@@ -541,15 +556,12 @@
           const invertedAngle = (2 * Math.PI) - normalizedAngle;
           const currentWedge = Math.floor(invertedAngle / arcSize) % numWedges;
 
-          // If a new wedge passes the pointer
           if (currentWedge !== previousWedge && previousWedge !== -1) {
             playTickSound();
-            // Push the triangle downward by 15 pixels (simulating the peg hitting it)
             flickOffset = 15; 
           }
           previousWedge = currentWedge;
 
-          // Physics Spring: Smoothly pull the triangle back up to 0 every frame
           flickOffset += (0 - flickOffset) * 0.15;
           pointer.style.transform = `translateY(calc(-50% + ${flickOffset}px))`;
 
@@ -564,7 +576,6 @@
           uncheckAllBtn.disabled = false;
           previousWedge = -1; 
           
-          // Ensure pointer rests perfectly at 0 when the wheel stops
           pointer.style.transform = `translateY(-50%)`;
           
           const normalizedAngle = currentAngle % (2 * Math.PI);
