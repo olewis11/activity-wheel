@@ -37,10 +37,12 @@
 
   /* Minecraft Easter Egg Mode */
   body.minecraft-mode {
-    background-image: url('https://images.unsplash.com/photo-1607513746994-51f730a44832?q=80&w=2000&auto=format&fit=crop'); 
+    /* Now points directly to your uploaded image */
+    background-image: url('minecraft.jpg'); 
     background-size: cover;
     background-position: center;
-    animation: panMinecraft 60s linear infinite;
+    /* We'll keep the slow panning animation to make it feel alive */
+    animation: panMinecraft 60s linear infinite; 
   }
 
   @keyframes panMinecraft {
