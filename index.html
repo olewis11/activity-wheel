@@ -10,23 +10,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* Base Theme using the new palette */
+  /* CSS Variables for Light/Dark Mode Theming */
+  :root {
+    --bg-color: #F6F4EF;
+    --text-color: #2D2B2A;
+    --panel-bg: #FFFFFF;
+    --border-color: #AAB7B8;
+    --accent-color: #E0F2F1;
+    --pointer-inner: #2D2B2A;
+    --btn-hover: #AAB7B8;
+    --custom-input-bg: #F6F4EF;
+    --result-color: #D35400;
+  }
+
+  body.dark-mode {
+    --bg-color: #1A1D20;
+    --text-color: #F0F2F5;
+    --panel-bg: #2C3034;
+    --border-color: #4A5056;
+    --accent-color: #3B4B4B;
+    --pointer-inner: #E0F2F1;
+    --btn-hover: #4A5056;
+    --custom-input-bg: #1A1D20;
+    --result-color: #F39C12;
+  }
+
   body {
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #FDFCF0; 
+    background-color: var(--bg-color); 
     margin: 0;
     padding: 40px 20px;
-    color: #2C3E50; 
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Top Controls Area */
+  .top-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .toggle-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn:hover {
+    background-color: var(--accent-color);
   }
 
   h1 {
     font-size: 38px;
     font-weight: 600;
+    margin-top: 0;
     margin-bottom: 40px;
-    color: #2C3E50;
+    color: var(--text-color);
     text-align: center;
     letter-spacing: -0.5px;
   }
@@ -44,23 +94,25 @@
 
   /* Elegant Card Panels */
   #checklist-panel {
-    background-color: #FFFFFF;
+    background-color: var(--panel-bg);
     padding: 30px 40px;
     border-radius: 24px;
-    box-shadow: 0 10px 40px rgba(44, 62, 80, 0.05);
-    border: 1px solid #AAB7B8;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
     min-width: 280px;
     display: flex;
     flex-direction: column; 
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   /* Segmented Control for Weather Options */
   .mode-selector {
     display: flex;
-    background-color: #E0F2F1;
+    background-color: var(--accent-color);
     border-radius: 16px;
     padding: 6px;
     margin-bottom: 25px;
+    transition: background-color 0.3s ease;
   }
 
   .mode-btn {
@@ -72,15 +124,15 @@
     font-family: inherit;
     font-size: 16px;
     font-weight: 600;
-    color: #34495E;
+    color: var(--text-color);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .mode-btn.active {
-    background-color: #FFFFFF;
-    color: #2C3E50;
-    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.08);
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   /* Minimalist Bulk Actions */
@@ -97,8 +149,8 @@
     font-size: 14px;
     font-family: inherit;
     font-weight: 500;
-    background-color: #E0F2F1;
-    color: #2C3E50;
+    background-color: var(--accent-color);
+    color: var(--text-color);
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -106,7 +158,7 @@
   }
 
   .bulk-btn:hover {
-    background-color: #AAB7B8;
+    background-color: var(--btn-hover);
   }
 
   .bulk-btn:active {
@@ -141,7 +193,7 @@
     display: flex;
     margin-top: auto; 
     gap: 12px;
-    border-top: 1px solid #AAB7B8;
+    border-top: 1px solid var(--border-color);
     padding-top: 25px;
   }
 
@@ -149,18 +201,18 @@
     flex: 1;
     padding: 12px 16px;
     font-size: 16px;
-    background-color: #FDFCF0;
+    background-color: var(--custom-input-bg);
     border: 1px solid transparent;
     border-radius: 12px;
     font-family: inherit;
-    color: #2C3E50;
-    transition: border 0.2s;
+    color: var(--text-color);
+    transition: all 0.3s ease;
   }
 
   #custom-input:focus {
     outline: none;
     border: 1px solid #4A90E2;
-    background-color: #FFFFFF;
+    background-color: var(--panel-bg);
   }
 
   #add-btn {
@@ -176,7 +228,7 @@
   }
 
   #add-btn:hover {
-    background-color: #2C3E50;
+    background-color: var(--text-color);
   }
   
   #add-btn:active {
@@ -188,13 +240,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center; 
-    background-color: #FFFFFF;
+    background-color: var(--panel-bg);
     padding: 40px;
     border-radius: 32px;
-    box-shadow: 0 10px 40px rgba(44, 62, 80, 0.05);
-    border: 1px solid #AAB7B8;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
     max-width: 100%;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   #wheel-container {
@@ -216,9 +269,10 @@
     /* Outer Triangle */
     border-top: 24px solid transparent;
     border-bottom: 24px solid transparent;
-    border-right: 42px solid #E0F2F1; 
+    border-right: 42px solid var(--accent-color); 
     z-index: 10;
     filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.15));
+    transition: border-right-color 0.3s ease;
   }
 
   /* Inner Triangle */
@@ -231,17 +285,19 @@
     height: 0;
     border-top: 16px solid transparent;
     border-bottom: 16px solid transparent;
-    border-right: 28px solid #2C3E50; 
+    border-right: 28px solid var(--pointer-inner); 
+    transition: border-right-color 0.3s ease;
   }
 
   /* Flat, clean wheel border matching the mode selector */
   #wheel {
     border-radius: 50%;
-    border: 12px solid #E0F2F1;
-    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.08);
-    background-color: #FDFCF0;
+    border: 12px solid var(--accent-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background-color: var(--bg-color);
     max-width: 100%; 
-    height: auto;    
+    height: auto;
+    transition: border-color 0.3s ease, background-color 0.3s ease;    
   }
 
   /* Modern Pill Button with Matching Border */
@@ -251,31 +307,30 @@
     font-family: inherit;
     font-weight: 600;
     letter-spacing: 1px;
-    background-color: #2C3E50; 
-    color: #FFFFFF;
-    border: 6px solid #E0F2F1;
+    background-color: var(--pointer-inner); 
+    color: var(--panel-bg);
+    border: 6px solid var(--accent-color);
     border-radius: 100px;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(44, 62, 80, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
     margin-bottom: 20px;
   }
 
   #spinBtn:hover {
-    background-color: #34495E;
-    box-shadow: 0 10px 24px rgba(44, 62, 80, 0.4);
     transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
   }
 
   #spinBtn:active {
     transform: translateY(2px);
-    box-shadow: 0 4px 10px rgba(44, 62, 80, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   }
 
   #spinBtn:disabled {
-    background-color: #AAB7B8;
-    border-color: #AAB7B8;
-    color: #FDFCF0;
+    background-color: var(--btn-hover);
+    border-color: var(--btn-hover);
+    color: var(--bg-color);
     box-shadow: none;
     cursor: not-allowed;
     transform: none;
@@ -284,9 +339,10 @@
   #result {
     font-size: 28px;
     font-weight: 500;
-    color: #D35400; 
+    color: var(--result-color); 
     min-height: 40px;
     text-align: center;
+    transition: color 0.3s ease;
   }
   
   @media (max-width: 600px) {
@@ -295,19 +351,24 @@
       right: -8px; 
       border-top: 16px solid transparent;
       border-bottom: 16px solid transparent;
-      border-right: 30px solid #E0F2F1; 
+      border-right: 30px solid var(--accent-color); 
     }
     #pointer::after {
       top: -10px;
       left: 5px;
       border-top: 10px solid transparent;
       border-bottom: 10px solid transparent;
-      border-right: 18px solid #2C3E50;
+      border-right: 18px solid var(--pointer-inner);
     }
   }
 </style>
 </head>
 <body>
+
+  <div class="top-controls">
+    <button id="theme-btn" class="toggle-btn">🌙 Dark Mode</button>
+    <button id="mute-btn" class="toggle-btn">🔊 Sound On</button>
+  </div>
 
   <h1>What Should We Do Next?</h1>
   
@@ -345,7 +406,7 @@
   </div>
 
   <script>
-    // The requested activities lists (with "Movies" update)
+    // The requested activities lists
     const sunnyActivities = [
       '⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', 
       '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', 
@@ -359,13 +420,12 @@
       '🧗‍♀️ Rock Climbing', '🎳 Bowling'
     ];
 
-    // The vibrant palette without #FAD7A0
+    // The Hearth pastel palette
     const colors = [
       '#4A90E2', '#5DBB63', '#F07167', '#F39C12', 
       '#8E44AD', '#27AE60', '#3E7B8B', '#D35400'
     ];
 
-    // Start with Sunny by default
     let currentMode = 'sunny';
     let masterActivities = [...sunnyActivities];
     let activeActivities = [...masterActivities];
@@ -383,14 +443,30 @@
     
     const sunnyBtn = document.getElementById('sunny-btn');
     const rainyBtn = document.getElementById('rainy-btn');
+    const themeBtn = document.getElementById('theme-btn');
+    const muteBtn = document.getElementById('mute-btn');
 
     let currentAngle = 0;
     let isSpinning = false;
     let audioCtx = null;
     let previousWedge = -1;
     let flickOffset = 0; 
+    let isMuted = false;
 
-    // Handle swapping between Sunny and Rainy modes
+    // Theme and Mute Toggles
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      themeBtn.innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      drawWheel(); // Redraw canvas to update hub/spoke colors
+    });
+
+    muteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      muteBtn.innerText = isMuted ? '🔇 Sound Off' : '🔊 Sound On';
+      if (isMuted) window.speechSynthesis.cancel();
+    });
+
     function setMode(mode) {
       if (isSpinning) return;
       currentMode = mode;
@@ -413,9 +489,7 @@
     rainyBtn.addEventListener('click', () => setMode('rainy'));
 
     function buildChecklist() {
-      // Clear out the old list
       checklistDiv.innerHTML = '';
-      
       masterActivities.forEach(activity => {
         addCheckboxToDOM(activity);
       });
@@ -446,7 +520,6 @@
         return;
       }
       
-      // Add it to whichever list is currently active
       if (currentMode === 'sunny') {
         sunnyActivities.push(newActivity);
       } else {
@@ -493,11 +566,11 @@
       if (activeActivities.length < 2) {
         spinBtn.disabled = true;
         resultDiv.innerText = "Select at least 2 options";
-        resultDiv.style.color = "#AAB7B8";
+        resultDiv.style.color = "var(--border-color)";
       } else {
         spinBtn.disabled = false;
         resultDiv.innerText = "Ready for the weekend";
-        resultDiv.style.color = "#D35400";
+        resultDiv.style.color = "var(--result-color)";
       }
 
       currentAngle = 0; 
@@ -505,9 +578,8 @@
     }
 
     function playTickSound() {
-      if (!audioCtx) return;
+      if (!audioCtx || isMuted) return;
       
-      // Ensure the audio context is running (fixes issues on some mobile browsers)
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
@@ -515,7 +587,6 @@
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
       
-      // Changed to a punchier triangle wave and boosted the volume slightly
       oscillator.type = 'triangle';
       oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
       oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
@@ -539,10 +610,11 @@
     }
 
     function announceWinner(activity) {
+      if (isMuted) return;
       window.speechSynthesis.cancel();
       
       const cleanText = activity.replace(/[^a-zA-Z0-9 -]/g, '').trim();
-      const announcement = new SpeechSynthesisUtterance(`Let's do ${cleanText}!`);
+      const announcement = new SpeechSynthesisUtterance(`And the winner is... ${cleanText}!`);
       
       announcement.pitch = 1.0; 
       announcement.rate = 1.0;  
@@ -556,6 +628,10 @@
       const numWedges = activeActivities.length;
       
       if (numWedges === 0) return; 
+
+      // Dynamically fetch current theme colors for the canvas
+      const isDark = document.body.classList.contains('dark-mode');
+      const accentColor = isDark ? '#3B4B4B' : '#E0F2F1';
 
       const arcSize = (2 * Math.PI) / numWedges;
       const centerX = canvas.width / 2;
@@ -571,9 +647,8 @@
         ctx.arc(centerX, centerY, radius, angle, angle + arcSize, false);
         ctx.fill();
         
-        // Updated Spokes
         ctx.lineWidth = 3; 
-        ctx.strokeStyle = "#E0F2F1";
+        ctx.strokeStyle = accentColor;
         ctx.stroke();
         ctx.save();
 
@@ -603,13 +678,12 @@
         ctx.restore();
       }
       
-      // Updated Hub
       ctx.beginPath();
       ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
-      ctx.fillStyle = "#E0F2F1"; 
+      ctx.fillStyle = accentColor; 
       ctx.fill();
       ctx.lineWidth = 4;
-      ctx.strokeStyle = "#E0F2F1";
+      ctx.strokeStyle = accentColor;
       ctx.stroke();
     }
 
@@ -619,7 +693,7 @@
       isSpinning = true;
       spinBtn.disabled = true;
       resultDiv.innerText = "Deciding...";
-      resultDiv.style.color = "#AAB7B8";
+      resultDiv.style.color = "var(--border-color)";
 
       const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
       checkboxes.forEach(box => box.disabled = true);
@@ -630,19 +704,19 @@
       sunnyBtn.disabled = true;
       rainyBtn.disabled = true;
 
-      // Ensure audio context is ready (creates the "unlock" so iOS Safari lets the sound play)
-      if (!audioCtx) {
+      if (!audioCtx && !isMuted) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-      if (audioCtx.state === 'suspended') {
+      if (audioCtx && audioCtx.state === 'suspended' && !isMuted) {
         audioCtx.resume();
       }
       
-      // Play a silent 1ms sound immediately on click to force mobile browsers to unlock audio
-      const unlockOsc = audioCtx.createOscillator();
-      unlockOsc.connect(audioCtx.destination);
-      unlockOsc.start(audioCtx.currentTime);
-      unlockOsc.stop(audioCtx.currentTime + 0.001);
+      if (audioCtx && !isMuted) {
+        const unlockOsc = audioCtx.createOscillator();
+        unlockOsc.connect(audioCtx.destination);
+        unlockOsc.start(audioCtx.currentTime);
+        unlockOsc.stop(audioCtx.currentTime + 0.001);
+      }
 
       const numWedges = activeActivities.length;
       const arcSize = (2 * Math.PI) / numWedges;
@@ -696,8 +770,8 @@
           const winningIndex = Math.floor(invertedAngle / arcSize) % numWedges;
           const winningActivity = activeActivities[winningIndex];
 
-          resultDiv.innerText = "Let's do " + winningActivity;
-          resultDiv.style.color = "#D35400";
+          resultDiv.innerText = "And the winner is... " + winningActivity;
+          resultDiv.style.color = "var(--result-color)";
 
           fireConfetti();
           announceWinner(winningActivity);
