@@ -54,14 +54,33 @@
     flex-direction: column; 
   }
 
-  #checklist-panel h2 {
-    margin-top: 0;
-    color: #2C2A26;
-    font-size: 22px;
+  /* Segmented Control for Weather Options */
+  .mode-selector {
+    display: flex;
+    background-color: #F0EEE7;
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 25px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 16px;
     font-weight: 600;
-    border-bottom: 1px solid #EBE7E0;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+    color: #A6A29C;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mode-btn.active {
+    background-color: #FFFFFF;
+    color: #4A4640;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
   /* Minimalist Bulk Actions */
@@ -174,7 +193,6 @@
     border-radius: 32px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.04);
     border: 1px solid #EBE7E0;
-    /* Ensure the section doesn't get wider than the screen */
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -202,13 +220,12 @@
     filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.1));
   }
 
-  /* Flat, clean wheel border - NOW WITH SQUISH TRICK */
+  /* Flat, clean wheel border with Squish Trick */
   #wheel {
     border-radius: 50%;
     border: 12px solid #F7F5F0;
     box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     background-color: #F7F5F0;
-    /* The Squish Trick */
     max-width: 100%; 
     height: auto;    
   }
@@ -257,11 +274,10 @@
     text-align: center;
   }
   
-  /* Extra media query to adjust pointer for very small screens */
   @media (max-width: 600px) {
     #pointer {
-      right: 0px; /* Bring the pointer closer on small screens */
-      border-right: 20px solid #D98A6C; /* Make it slightly smaller */
+      right: 0px; 
+      border-right: 20px solid #D98A6C; 
     }
   }
 </style>
@@ -273,7 +289,11 @@
   <div id="main-layout">
     
     <div id="checklist-panel">
-      <h2>Activities</h2>
+      
+      <div class="mode-selector">
+        <button class="mode-btn active" id="sunny-btn">☀️ Sunny Day</button>
+        <button class="mode-btn" id="rainy-btn">🌧️ Rainy Day</button>
+      </div>
       
       <div class="bulk-actions">
         <button class="bulk-btn" id="check-all-btn">Select All</button>
@@ -300,10 +320,18 @@
   </div>
 
   <script>
-    const masterActivities = [
+    // Two distinct lists including all original requests!
+    const sunnyActivities = [
       '⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', 
       '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', 
       '🚲 Bikes', '🏎️ Go-Karts', '🧭 Exploring', '🐕 Fetch'
+    ];
+
+    const rainyActivities = [
+      '🛁 Hot Tub', '🏰 Build A Fort', '🧱 Legos', 
+      '🎮 Video Games', '🔫 Nerf Battle', '🎲 Board Game', 
+      '🍿 Movie Marathon', '📖 Reading', '🧑‍🍳 Baking', 
+      '🧗‍♀️ Rock Climbing', '🎳 Bowling'
     ];
 
     const colors = [
@@ -311,6 +339,9 @@
       '#C2B8A3', '#E8B4A6', '#A6A29C' 
     ];
 
+    // Start with Sunny by default
+    let currentMode = 'sunny';
+    let masterActivities = [...sunnyActivities];
     let activeActivities = [...masterActivities];
 
     const canvas = document.getElementById('wheel');
@@ -323,6 +354,9 @@
     const checkAllBtn = document.getElementById('check-all-btn');
     const uncheckAllBtn = document.getElementById('uncheck-all-btn');
     const pointer = document.getElementById('pointer');
+    
+    const sunnyBtn = document.getElementById('sunny-btn');
+    const rainyBtn = document.getElementById('rainy-btn');
 
     let currentAngle = 0;
     let isSpinning = false;
@@ -330,7 +364,32 @@
     let previousWedge = -1;
     let flickOffset = 0; 
 
+    // Handle swapping between Sunny and Rainy modes
+    function setMode(mode) {
+      if (isSpinning) return;
+      currentMode = mode;
+      
+      if (mode === 'sunny') {
+        sunnyBtn.classList.add('active');
+        rainyBtn.classList.remove('active');
+        masterActivities = [...sunnyActivities];
+      } else {
+        rainyBtn.classList.add('active');
+        sunnyBtn.classList.remove('active');
+        masterActivities = [...rainyActivities];
+      }
+      
+      buildChecklist();
+      updateActiveActivities();
+    }
+
+    sunnyBtn.addEventListener('click', () => setMode('sunny'));
+    rainyBtn.addEventListener('click', () => setMode('rainy'));
+
     function buildChecklist() {
+      // Clear out the old list
+      checklistDiv.innerHTML = '';
+      
       masterActivities.forEach(activity => {
         addCheckboxToDOM(activity);
       });
@@ -360,7 +419,15 @@
         customInput.value = '';
         return;
       }
+      
+      // Add it to whichever list is currently active
+      if (currentMode === 'sunny') {
+        sunnyActivities.push(newActivity);
+      } else {
+        rainyActivities.push(newActivity);
+      }
       masterActivities.push(newActivity);
+      
       addCheckboxToDOM(newActivity);
       customInput.value = '';
       updateActiveActivities();
@@ -525,6 +592,8 @@
       addBtn.disabled = true;
       checkAllBtn.disabled = true;
       uncheckAllBtn.disabled = true;
+      sunnyBtn.disabled = true;
+      rainyBtn.disabled = true;
 
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -574,6 +643,8 @@
           addBtn.disabled = false;
           checkAllBtn.disabled = false;
           uncheckAllBtn.disabled = false;
+          sunnyBtn.disabled = false;
+          rainyBtn.disabled = false;
           previousWedge = -1; 
           
           pointer.style.transform = `translateY(-50%)`;
@@ -594,6 +665,7 @@
       requestAnimationFrame(animate);
     }
 
+    // Initialize the app
     buildChecklist();
     spinBtn.addEventListener('click', spin);
     drawWheel();
