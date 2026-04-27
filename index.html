@@ -35,6 +35,20 @@
     --result-color: #F39C12;
   }
 
+  /* Minecraft Easter Egg Mode */
+  body.minecraft-mode {
+    background-image: url('https://images.unsplash.com/photo-1607513746994-51f730a44832?q=80&w=2000&auto=format&fit=crop'); 
+    background-size: cover;
+    background-position: center;
+    animation: panMinecraft 60s linear infinite;
+  }
+
+  @keyframes panMinecraft {
+    0% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+    100% { background-position: 0% center; }
+  }
+
   body {
     display: flex;
     flex-direction: column;
@@ -45,30 +59,7 @@
     padding: 40px 20px;
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  /* Top Controls Area */
-  .top-controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .toggle-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    background-color: var(--panel-bg);
-    color: var(--text-color);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .toggle-btn:hover {
-    background-color: var(--accent-color);
+    min-height: 100vh;
   }
 
   h1 {
@@ -79,6 +70,11 @@
     color: var(--text-color);
     text-align: center;
     letter-spacing: -0.5px;
+    background-color: var(--panel-bg);
+    padding: 10px 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: background-color 0.3s ease;
   }
 
   #main-layout {
@@ -294,10 +290,24 @@
     border-radius: 50%;
     border: 12px solid var(--accent-color);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    background-color: var(--bg-color);
+    background-color: var(--panel-bg);
     max-width: 100%; 
     height: auto;
     transition: border-color 0.3s ease, background-color 0.3s ease;    
+  }
+
+  /* The Invisible Easter Egg Button */
+  #secret-hub-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; /* Matches the 30px radius of the canvas hub */
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 20; /* Sits above the canvas */
+    background-color: transparent;
   }
 
   /* Modern Pill Button with Matching Border */
@@ -344,6 +354,30 @@
     text-align: center;
     transition: color 0.3s ease;
   }
+
+  /* Bottom Controls Area */
+  .bottom-controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 40px;
+  }
+
+  .toggle-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-btn:hover {
+    background-color: var(--accent-color);
+  }
   
   @media (max-width: 600px) {
     /* MOBILE POINTER STYLES */
@@ -364,11 +398,6 @@
 </style>
 </head>
 <body>
-
-  <div class="top-controls">
-    <button id="theme-btn" class="toggle-btn">🌙 Dark Mode</button>
-    <button id="mute-btn" class="toggle-btn">🔊 Sound On</button>
-  </div>
 
   <h1>What Should We Do Next?</h1>
   
@@ -398,11 +427,17 @@
       <div id="wheel-container">
         <div id="pointer"></div>
         <canvas id="wheel" width="500" height="500"></canvas>
+        <div id="secret-hub-btn" title="???"></div>
       </div>
       <button id="spinBtn">SPIN</button>
       <div id="result">Ready for the weekend</div>
     </div>
 
+  </div>
+
+  <div class="bottom-controls">
+    <button id="theme-btn" class="toggle-btn">🌙 Dark Mode</button>
+    <button id="mute-btn" class="toggle-btn">🔊 Sound On</button>
   </div>
 
   <script>
@@ -445,6 +480,7 @@
     const rainyBtn = document.getElementById('rainy-btn');
     const themeBtn = document.getElementById('theme-btn');
     const muteBtn = document.getElementById('mute-btn');
+    const secretHubBtn = document.getElementById('secret-hub-btn');
 
     let currentAngle = 0;
     let isSpinning = false;
@@ -465,6 +501,11 @@
       isMuted = !isMuted;
       muteBtn.innerText = isMuted ? '🔇 Sound Off' : '🔊 Sound On';
       if (isMuted) window.speechSynthesis.cancel();
+    });
+
+    // Minecraft Easter Egg
+    secretHubBtn.addEventListener('click', () => {
+      document.body.classList.toggle('minecraft-mode');
     });
 
     function setMode(mode) {
