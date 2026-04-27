@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Should We Do Next?</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* Base Hearth-like Theme: Warm, minimalist, matte */
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F7F5F0; 
+    margin: 0;
+    padding: 40px 20px;
+    color: #4A4640; 
+  }
+
+  h1 {
+    font-size: 38px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #2C2A26;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+
+  #main-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; 
+    justify-content: center;
+    gap: 40px;
+    max-width: 1200px;
+    width: 100%;
+    flex-wrap: wrap; 
+  }
+
+  /* Elegant Card Panels */
+  #checklist-panel {
+    background-color: #FFFFFF;
+    padding: 30px 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    border: 1px solid #EBE7E0;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column; 
+  }
+
+  #checklist-panel h2 {
+    margin-top: 0;
+    color: #2C2A26;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 1px solid #EBE7E0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+
+  /* Minimalist Bulk Actions */
+  .bulk-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .bulk-btn {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    background-color: #F0EEE7;
+    color: #4A4640;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .bulk-btn:hover {
+    background-color: #E6E3DB;
+  }
+
+  .bulk-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Clean Checklist Items */
+  .check-item {
+    display: flex;
+    align-items: center;
+    margin: 14px 0;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .check-item:hover {
+    opacity: 0.8;
+  }
+
+  .check-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    cursor: pointer;
+    accent-color: #7C9A92; 
+  }
+
+  /* Subtle Custom Input */
+  .add-custom-container {
+    display: flex;
+    margin-top: auto; 
+    gap: 12px;
+    border-top: 1px solid #EBE7E0;
+    padding-top: 25px;
+  }
+
+  #custom-input {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 16px;
+    background-color: #F7F5F0;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-family: inherit;
+    color: #4A4640;
+    transition: border 0.2s;
+  }
+
+  #custom-input:focus {
+    outline: none;
+    border: 1px solid #7C9A92;
+    background-color: #FFFFFF;
+  }
+
+  #add-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #7C9A92; 
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+
+  #add-btn:hover {
+    background-color: #6A857E;
+  }
+  
+  #add-btn:active {
+    transform: scale(0.96);
+  }
+
+  #wheel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    background-color: #FFFFFF;
+    padding: 40px;
+    border-radius: 32px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    border: 1px solid #EBE7E0;
+  }
+
+  #wheel-container {
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  /* Elegant Pointer */
+  #pointer {
+    position: absolute;
+    top: 50%;
+    right: -25px; 
+    /* Will be controlled via JS for the flick animation */
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 30px solid #D98A6C; 
+    z-index: 10;
+    filter: drop-shadow(-2px 2px 4px rgba(0,0,0,0.1));
+    /* Removing transition here so JS can manipulate it instantly frame-by-frame */
+  }
+
+  /* Flat, clean wheel border */
+  #wheel {
+    border-radius: 50%;
+    border: 12px solid #F7F5F0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    background-color: #F7F5F0;
+  }
+
+  /* Modern Pill Button */
+  #spinBtn {
+    padding: 16px 60px;
+    font-size: 22px;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: #D9B46C; 
+    color: #FFFFFF;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(217, 180, 108, 0.3);
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+  }
+
+  #spinBtn:hover {
+    background-color: #CBA55B;
+    box-shadow: 0 10px 24px rgba(217, 180, 108, 0.4);
+    transform: translateY(-2px);
+  }
+
+  #spinBtn:active {
+    transform: translateY(2px);
+    box-shadow: 0 4px 10px rgba(217, 180, 108, 0.2);
+  }
+
+  #spinBtn:disabled {
+    background-color: #E6E3DB;
+    color: #A6A29C;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  #result {
+    font-size: 28px;
+    font-weight: 500;
+    color: #D98A6C; 
+    min-height: 40px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <h1>What Should We Do Next?</h1>
+  
+  <div id="main-layout">
+    
+    <div id="checklist-panel">
+      <h2>Activities</h2>
+      
+      <div class="bulk-actions">
+        <button class="bulk-btn" id="check-all-btn">Select All</button>
+        <button class="bulk-btn" id="uncheck-all-btn">Clear All</button>
+      </div>
+
+      <div id="checklist-items"></div>
+      
+      <div class="add-custom-container">
+        <input type="text" id="custom-input" placeholder="Add an activity...">
+        <button id="add-btn">Add</button>
+      </div>
+    </div>
+
+    <div id="wheel-section">
+      <div id="wheel-container">
+        <div id="pointer"></div>
+        <canvas id="wheel" width="500" height="500"></canvas>
+      </div>
+      <button id="spinBtn">SPIN</button>
+      <div id="result">Ready for the weekend</div>
+    </div>
+
+  </div>
+
+  <script>
+    const masterActivities = [
+      '⚽ Soccer', '⚾ Baseball', '🛁 Hot Tub', '🛝 Swings', 
+      '🥷 Ninja Course', '🧗‍♂️ Zipline', '🏒 Street Hockey', 
+      '🚲 Bikes', '🏎️ Go-Karts', '🧭 Exploring', '🐕 Fetch'
+    ];
+
+    const colors = [
+      '#7C9A92', '#D9B46C', '#D98A6C', '#7A90A4', 
+      '#C2B8A3', '#E8B4A6', '#A6A29C' 
+    ];
+
+    let activeActivities = [...masterActivities];
+
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const resultDiv = document.getElementById('result');
+    const checklistDiv = document.getElementById('checklist-items');
+    const customInput = document.getElementById('custom-input');
+    const addBtn = document.getElementById('add-btn');
+    const checkAllBtn = document.getElementById('check-all-btn');
+    const uncheckAllBtn = document.getElementById('uncheck-all-btn');
+    const pointer = document.getElementById('pointer');
+
+    let currentAngle = 0;
+    let isSpinning = false;
+    let audioCtx = null;
+    let previousWedge = -1;
+    let flickOffset = 0; // Tracks the vertical bounce of the pointer
+
+    function buildChecklist() {
+      masterActivities.forEach(activity => {
+        addCheckboxToDOM(activity);
+      });
+    }
+
+    function addCheckboxToDOM(activity) {
+      const label = document.createElement('label');
+      label.className = 'check-item';
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = activity;
+      checkbox.checked = true; 
+      
+      checkbox.addEventListener('change', updateActiveActivities);
+      
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(activity));
+      checklistDiv.appendChild(label);
+    }
+
+    function addCustomActivity() {
+      const newActivity = customInput.value.trim();
+      if (newActivity === '') return;
+      if (masterActivities.map(a => a.toLowerCase()).includes(newActivity.toLowerCase())) {
+        alert("That is already on the list!");
+        customInput.value = '';
+        return;
+      }
+      masterActivities.push(newActivity);
+      addCheckboxToDOM(newActivity);
+      customInput.value = '';
+      updateActiveActivities();
+    }
+
+    addBtn.addEventListener('click', addCustomActivity);
+    customInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addCustomActivity();
+    });
+
+    checkAllBtn.addEventListener('click', () => {
+      if (isSpinning) return;
+      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+      checkboxes.forEach(box => box.checked = true);
+      updateActiveActivities();
+    });
+
+    uncheckAllBtn.addEventListener('click', () => {
+      if (isSpinning) return;
+      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+      checkboxes.forEach(box => box.checked = false);
+      updateActiveActivities();
+    });
+
+    function updateActiveActivities() {
+      if (isSpinning) return; 
+
+      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+      activeActivities = [];
+      
+      checkboxes.forEach(box => {
+        if (box.checked) {
+          activeActivities.push(box.value);
+        }
+      });
+
+      if (activeActivities.length < 2) {
+        spinBtn.disabled = true;
+        resultDiv.innerText = "Select at least 2 options";
+        resultDiv.style.color = "#A6A29C";
+      } else {
+        spinBtn.disabled = false;
+        resultDiv.innerText = "Ready for the weekend";
+        resultDiv.style.color = "#D98A6C";
+      }
+
+      currentAngle = 0; 
+      drawWheel();
+    }
+
+    function playTickSound() {
+      if (!audioCtx) return;
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); 
+      oscillator.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function fireConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#7C9A92', '#D9B46C', '#D98A6C', '#7A90A4', '#E8B4A6'],
+        zIndex: 1000 
+      });
+    }
+
+    function announceWinner(activity) {
+      window.speechSynthesis.cancel();
+      
+      const cleanText = activity.replace(/[^a-zA-Z0-9 -]/g, '').trim();
+      const announcement = new SpeechSynthesisUtterance(`Let's do ${cleanText}!`);
+      
+      announcement.pitch = 1.0; 
+      announcement.rate = 1.0;  
+      announcement.volume = 0.8;
+
+      window.speechSynthesis.speak(announcement);
+    }
+
+    function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const numWedges = activeActivities.length;
+      
+      if (numWedges === 0) return; 
+
+      const arcSize = (2 * Math.PI) / numWedges;
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2;
+
+      for (let i = 0; i < numWedges; i++) {
+        const angle = currentAngle + i * arcSize;
+        
+        ctx.beginPath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + arcSize, false);
+        ctx.fill();
+        
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.stroke();
+        ctx.save();
+
+        ctx.fillStyle = 'white';
+        
+        let fontSize = 22;
+        if (numWedges > 12) fontSize = 16;
+        if (numWedges > 18) fontSize = 13;
+
+        const textRadius = radius - 35; 
+        ctx.translate(
+          centerX + Math.cos(angle + arcSize / 2) * textRadius, 
+          centerY + Math.sin(angle + arcSize / 2) * textRadius
+        );
+        ctx.rotate(angle + arcSize / 2);
+        
+        ctx.font = `500 ${fontSize}px 'Outfit', sans-serif`;
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        
+        let displayText = activeActivities[i];
+        if (displayText.length > 20) {
+           displayText = displayText.substring(0, 17) + "...";
+        }
+        
+        ctx.fillText(displayText, 0, 0);
+        ctx.restore();
+      }
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+      ctx.fillStyle = "#F7F5F0";
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.stroke();
+    }
+
+    function spin() {
+      if (isSpinning || activeActivities.length < 2) return;
+      
+      isSpinning = true;
+      spinBtn.disabled = true;
+      resultDiv.innerText = "Deciding...";
+      resultDiv.style.color = "#A6A29C";
+
+      const checkboxes = document.querySelectorAll('#checklist-items input[type="checkbox"]');
+      checkboxes.forEach(box => box.disabled = true);
+      customInput.disabled = true;
+      addBtn.disabled = true;
+      checkAllBtn.disabled = true;
+      uncheckAllBtn.disabled = true;
+
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const numWedges = activeActivities.length;
+      const arcSize = (2 * Math.PI) / numWedges;
+      const spinDuration = 5000 + Math.random() * 3000; 
+      const spinTotalAngle = (Math.random() * 10 + 25) * Math.PI; 
+      const startTime = performance.now();
+
+      function easeOutQuart(t, b, c, d) {
+        t /= d;
+        t--;
+        return -c * (t * t * t * t - 1) + b;
+      }
+
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        
+        if (elapsed < spinDuration) {
+          currentAngle = easeOutQuart(elapsed, 0, spinTotalAngle, spinDuration);
+          drawWheel();
+          
+          const normalizedAngle = currentAngle % (2 * Math.PI);
+          const invertedAngle = (2 * Math.PI) - normalizedAngle;
+          const currentWedge = Math.floor(invertedAngle / arcSize) % numWedges;
+
+          // If a new wedge passes the pointer
+          if (currentWedge !== previousWedge && previousWedge !== -1) {
+            playTickSound();
+            // Push the triangle downward by 15 pixels (simulating the peg hitting it)
+            flickOffset = 15; 
+          }
+          previousWedge = currentWedge;
+
+          // Physics Spring: Smoothly pull the triangle back up to 0 every frame
+          flickOffset += (0 - flickOffset) * 0.15;
+          pointer.style.transform = `translateY(calc(-50% + ${flickOffset}px))`;
+
+          requestAnimationFrame(animate);
+        } else {
+          isSpinning = false;
+          spinBtn.disabled = false;
+          checkboxes.forEach(box => box.disabled = false);
+          customInput.disabled = false;
+          addBtn.disabled = false;
+          checkAllBtn.disabled = false;
+          uncheckAllBtn.disabled = false;
+          previousWedge = -1; 
+          
+          // Ensure pointer rests perfectly at 0 when the wheel stops
+          pointer.style.transform = `translateY(-50%)`;
+          
+          const normalizedAngle = currentAngle % (2 * Math.PI);
+          const invertedAngle = (2 * Math.PI) - normalizedAngle;
+          const winningIndex = Math.floor(invertedAngle / arcSize) % numWedges;
+          const winningActivity = activeActivities[winningIndex];
+
+          resultDiv.innerText = "Let's do " + winningActivity;
+          resultDiv.style.color = "#D98A6C";
+
+          fireConfetti();
+          announceWinner(winningActivity);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    buildChecklist();
+    spinBtn.addEventListener('click', spin);
+    drawWheel();
+  </script>
+</body>
+</html>
