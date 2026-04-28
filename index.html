@@ -37,12 +37,10 @@
 
   /* Minecraft Easter Egg Mode */
   body.minecraft-mode {
-    /* Now points directly to your uploaded image */
     background-image: url('minecraft.jpg'); 
     background-size: cover;
     background-position: center;
-    /* We'll keep the slow panning animation to make it feel alive */
-    animation: panMinecraft 60s linear infinite; 
+    animation: panMinecraft 60s linear infinite;
   }
 
   @keyframes panMinecraft {
@@ -304,15 +302,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60px; /* Matches the 30px radius of the canvas hub */
+    width: 60px; 
     height: 60px;
     border-radius: 50%;
     cursor: pointer;
-    z-index: 20; /* Sits above the canvas */
+    z-index: 20; 
     background-color: transparent;
   }
 
-  /* Modern Pill Button with Matching Border */
+  /* Modern Pill Button */
   #spinBtn {
     padding: 14px 56px; 
     font-size: 22px;
@@ -357,28 +355,77 @@
     transition: color 0.3s ease;
   }
 
-  /* Bottom Controls Area */
-  .bottom-controls {
+  /* Floating Settings Menu */
+  .floating-menu-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
     gap: 12px;
-    margin-top: 40px;
+    z-index: 100;
   }
 
-  .toggle-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
+  .menu-toggle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .menu-toggle-btn:hover {
+    background-color: var(--accent-color);
+    transform: rotate(45deg);
+  }
+
+  .floating-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: var(--panel-bg);
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transform-origin: bottom right;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: auto;
+  }
+
+  .floating-menu.hidden {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    pointer-events: none;
+  }
+
+  .setting-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    background-color: var(--accent-color);
     color: var(--text-color);
     font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
   }
 
-  .toggle-btn:hover {
-    background-color: var(--accent-color);
+  .setting-btn:hover {
+    background-color: var(--btn-hover);
   }
   
   @media (max-width: 600px) {
@@ -437,10 +484,15 @@
 
   </div>
 
-  <div class="bottom-controls">
-    <button id="theme-btn" class="toggle-btn">🌙 Dark Mode</button>
-    <button id="mute-btn" class="toggle-btn">🔊 Sound On</button>
+  <div class="floating-menu-container">
+    <button id="menu-toggle-btn" class="menu-toggle-btn">⚙️</button>
+    <div id="floating-menu" class="floating-menu hidden">
+      <button id="theme-btn" class="setting-btn">🌙 Dark Mode</button>
+      <button id="mute-btn" class="setting-btn">🔊 Sound On</button>
+    </div>
   </div>
+
+  <audio id="minecraft-audio" src="minecraft.mp3" loop></audio>
 
   <script>
     // The requested activities lists
@@ -480,9 +532,14 @@
     
     const sunnyBtn = document.getElementById('sunny-btn');
     const rainyBtn = document.getElementById('rainy-btn');
+    
+    // UI Elements for Floating Menu
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    const floatingMenu = document.getElementById('floating-menu');
     const themeBtn = document.getElementById('theme-btn');
     const muteBtn = document.getElementById('mute-btn');
     const secretHubBtn = document.getElementById('secret-hub-btn');
+    const minecraftAudio = document.getElementById('minecraft-audio');
 
     let currentAngle = 0;
     let isSpinning = false;
@@ -490,6 +547,18 @@
     let previousWedge = -1;
     let flickOffset = 0; 
     let isMuted = false;
+
+    // Toggle Floating Menu
+    menuToggleBtn.addEventListener('click', () => {
+      floatingMenu.classList.toggle('hidden');
+    });
+
+    // Close floating menu if clicked outside
+    document.addEventListener('click', (event) => {
+      if (!floatingMenu.contains(event.target) && !menuToggleBtn.contains(event.target)) {
+        floatingMenu.classList.add('hidden');
+      }
+    });
 
     // Theme and Mute Toggles
     themeBtn.addEventListener('click', () => {
@@ -502,12 +571,28 @@
     muteBtn.addEventListener('click', () => {
       isMuted = !isMuted;
       muteBtn.innerText = isMuted ? '🔇 Sound Off' : '🔊 Sound On';
-      if (isMuted) window.speechSynthesis.cancel();
+      
+      if (isMuted) {
+        window.speechSynthesis.cancel();
+        minecraftAudio.pause();
+      } else {
+        // If we unmute while in Minecraft mode, resume the music
+        if (document.body.classList.contains('minecraft-mode')) {
+          minecraftAudio.play().catch(e => console.log("Audio play blocked by browser:", e));
+        }
+      }
     });
 
     // Minecraft Easter Egg
     secretHubBtn.addEventListener('click', () => {
-      document.body.classList.toggle('minecraft-mode');
+      const isMinecraft = document.body.classList.toggle('minecraft-mode');
+      
+      if (isMinecraft && !isMuted) {
+        minecraftAudio.play().catch(e => console.log("Audio play blocked by browser:", e));
+      } else {
+        minecraftAudio.pause();
+        minecraftAudio.currentTime = 0; // Rewind the song when exiting
+      }
     });
 
     function setMode(mode) {
@@ -612,7 +697,7 @@
         resultDiv.style.color = "var(--border-color)";
       } else {
         spinBtn.disabled = false;
-        resultDiv.innerText = "Ready for the weekend?";
+        resultDiv.innerText = "Ready for the weekend";
         resultDiv.style.color = "var(--result-color)";
       }
 
