@@ -444,6 +444,7 @@
     #checklist-panel { flex: 0 0 auto; }
     #wheel-section { order: -1; width: 100%; flex: 1 1 auto; padding: 24px 28px; }
     #wheel-container { margin-bottom: 12px; }
+    #wheel { width: 950px; height: 950px; max-width: 100%; }
     #pointer {
       right: -22px;
       border-top: 38px solid transparent;
@@ -573,12 +574,24 @@
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
 
-    // Hearth Display / tablet-width screens get a larger wheel (all drawing is scaled by S)
-    const isTablet = window.matchMedia('(min-width: 700px) and (max-width: 1100px)').matches;
-    const WHEEL_SIZE = isTablet ? 950 : 500;
-    const S = WHEEL_SIZE / 500;
-    canvas.width = WHEEL_SIZE;
-    canvas.height = WHEEL_SIZE;
+    // Hearth Display / tablet-width screens get a larger wheel (all drawing is scaled by S).
+    // Re-evaluated on resize/rotation because installed-app windows can report a different
+    // width at load time than once the page has finished laying out.
+    const tabletQuery = window.matchMedia('(min-width: 700px) and (max-width: 1100px)');
+    let isTablet = tabletQuery.matches;
+    let S = 1;
+    function applyWheelSize() {
+      isTablet = tabletQuery.matches;
+      const size = isTablet ? 950 : 500;
+      S = size / 500;
+      if (canvas.width !== size) {
+        canvas.width = size;
+        canvas.height = size;
+      }
+    }
+    applyWheelSize();
+    window.addEventListener('resize', () => { applyWheelSize(); drawWheel(); });
+    window.addEventListener('load', () => { applyWheelSize(); drawWheel(); });
 
     // Emoji newer than Android 11's font get a Noto image instead
     const emojiImages = { '🛝': 'emoji_u1f6dd.png' };
@@ -589,14 +602,13 @@
       emojiImages[emoji] = img;
     });
 
-    // Hide the browser address bar on the first tap (needs a user gesture)
-    if (isTablet) {
-      document.addEventListener('click', () => {
-        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        }
-      }, { once: true });
-    }
+    // Hide the browser address bar on the first tap (needs a user gesture).
+    // Not needed (and a no-op) when installed as a full-screen app.
+    document.addEventListener('click', () => {
+      if (isTablet && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    }, { once: true });
     const spinBtn = document.getElementById('spinBtn');
     const resultDiv = document.getElementById('result');
     const checklistDiv = document.getElementById('checklist-items');
