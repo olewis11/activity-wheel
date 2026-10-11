@@ -428,6 +428,55 @@
     background-color: var(--btn-hover);
   }
   
+
+  /* Noto image used where the system emoji font lacks the glyph (Emoji 14+ on Android 11) */
+  .emoji-img { height: 1.15em; width: 1.15em; vertical-align: -0.2em; margin-right: 0.25em; }
+
+  /* Tablet / Hearth Display (1080x1920 portrait): large, touch-friendly layout that fits on one
+     screen without scrolling. The wheel comes first; the checklist sits below it, same width. */
+  @media (min-width: 700px) and (max-width: 1100px) {
+    /* Fill the full viewport height (adapts to fullscreen vs. address bar showing) */
+    body { padding: 20px; min-height: 100vh; min-height: 100dvh; box-sizing: border-box; }
+    h1 { font-size: 52px; margin-bottom: 20px; padding: 12px 36px; }
+    #main-layout { gap: 20px; flex: 1; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; }
+    #checklist-panel { flex: 0 0 auto; }
+    #wheel-section { order: -1; width: 100%; flex: 1 1 auto; padding: 24px 28px; }
+    #wheel-container { margin-bottom: 12px; }
+    #pointer {
+      right: -22px;
+      border-top: 38px solid transparent;
+      border-bottom: 38px solid transparent;
+      border-right: 67px solid var(--accent-color);
+    }
+    #pointer::after {
+      top: -26px; left: 11px;
+      border-top: 26px solid transparent;
+      border-bottom: 26px solid transparent;
+      border-right: 45px solid var(--pointer-inner);
+    }
+    #secret-hub-btn { width: 96px; height: 96px; }
+    #spinBtn { font-size: 34px; padding: 14px 80px; border-width: 8px; margin-bottom: 10px; }
+    #result { font-size: 40px; min-height: 52px; }
+
+    #checklist-panel { width: 100%; box-sizing: border-box; padding: 28px 32px; }
+    .mode-selector { margin-bottom: 16px; }
+    .mode-btn { font-size: 26px; padding: 16px; }
+    .bulk-actions { margin-bottom: 16px; }
+    .bulk-btn { font-size: 20px; padding: 12px; }
+    #checklist-items { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 24px; }
+    .check-item { font-size: 26px; margin: 0 0 18px; }
+    .check-item input[type="checkbox"] { width: 28px; height: 28px; margin-right: 14px; flex-shrink: 0; }
+    .add-custom-container { padding-top: 18px; }
+    #custom-input { font-size: 24px; padding: 12px 18px; }
+    #add-btn { font-size: 24px; padding: 12px 30px; }
+
+    /* Settings gear moves to the top-right so it never covers the Add button */
+    .floating-menu-container { top: 20px; bottom: auto; right: 24px; flex-direction: column; }
+    .floating-menu { transform-origin: top right; }
+    .menu-toggle-btn { width: 72px; height: 72px; font-size: 34px; }
+    .setting-btn { font-size: 24px; padding: 16px 28px; }
+  }
+
   @media (max-width: 600px) {
     /* MOBILE POINTER STYLES */
     #pointer {
@@ -521,6 +570,31 @@
 
     const canvas = document.getElementById('wheel');
     const ctx = canvas.getContext('2d');
+
+    // Hearth Display / tablet-width screens get a larger wheel (all drawing is scaled by S)
+    const isTablet = window.matchMedia('(min-width: 700px) and (max-width: 1100px)').matches;
+    const WHEEL_SIZE = isTablet ? 950 : 500;
+    const S = WHEEL_SIZE / 500;
+    canvas.width = WHEEL_SIZE;
+    canvas.height = WHEEL_SIZE;
+
+    // Emoji newer than Android 11's font get a Noto image instead
+    const emojiImages = { '🛝': 'emoji_u1f6dd.png' };
+    Object.keys(emojiImages).forEach(emoji => {
+      const img = new Image();
+      img.onload = () => drawWheel();
+      img.src = emojiImages[emoji];
+      emojiImages[emoji] = img;
+    });
+
+    // Hide the browser address bar on the first tap (needs a user gesture)
+    if (isTablet) {
+      document.addEventListener('click', () => {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      }, { once: true });
+    }
     const spinBtn = document.getElementById('spinBtn');
     const resultDiv = document.getElementById('result');
     const checklistDiv = document.getElementById('checklist-items');
@@ -635,7 +709,17 @@
       checkbox.addEventListener('change', updateActiveActivities);
       
       label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(activity));
+      const leading = Object.keys(emojiImages).find(e => activity.startsWith(e));
+      if (leading) {
+        const img = document.createElement('img');
+        img.src = emojiImages[leading].src;
+        img.alt = leading;
+        img.className = 'emoji-img';
+        label.appendChild(img);
+        label.appendChild(document.createTextNode(activity.slice(leading.length).trim()));
+      } else {
+        label.appendChild(document.createTextNode(activity));
+      }
       checklistDiv.appendChild(label);
     }
 
@@ -775,7 +859,7 @@
         ctx.arc(centerX, centerY, radius, angle, angle + arcSize, false);
         ctx.fill();
         
-        ctx.lineWidth = 3; 
+        ctx.lineWidth = 3 * S; 
         ctx.strokeStyle = accentColor;
         ctx.stroke();
         ctx.save();
@@ -786,31 +870,43 @@
         if (numWedges > 12) fontSize = 16;
         if (numWedges > 18) fontSize = 13;
 
-        const textRadius = radius - 35; 
+        const textRadius = radius - 35 * S; 
         ctx.translate(
           centerX + Math.cos(angle + arcSize / 2) * textRadius, 
           centerY + Math.sin(angle + arcSize / 2) * textRadius
         );
         ctx.rotate(angle + arcSize / 2);
         
+        fontSize *= S;
         ctx.font = `500 ${fontSize}px 'Outfit', sans-serif`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
         
         let displayText = activeActivities[i];
+        let emojiImg = null;
+        const leading = Object.keys(emojiImages).find(e => displayText.startsWith(e));
+        if (leading) {
+          emojiImg = emojiImages[leading];
+          displayText = displayText.slice(leading.length).trim();
+        }
         if (displayText.length > 20) {
            displayText = displayText.substring(0, 17) + "...";
         }
         
         ctx.fillText(displayText, 0, 0);
+        if (emojiImg && emojiImg.complete) {
+          const size = fontSize * 1.15;
+          const textWidth = ctx.measureText(displayText).width;
+          ctx.drawImage(emojiImg, -textWidth - size - 8 * S, -size / 2, size, size);
+        }
         ctx.restore();
       }
       
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+      ctx.arc(centerX, centerY, 30 * S, 0, 2 * Math.PI);
       ctx.fillStyle = accentColor; 
       ctx.fill();
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 4 * S;
       ctx.strokeStyle = accentColor;
       ctx.stroke();
     }
